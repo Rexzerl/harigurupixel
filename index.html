@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Hari Guru Quest 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0d14;
+      --panel: #161925;
+      --panel-light: #1f2436;
+      --border: #475569;
+      --gold: #fbbf24;
+      --cyan: #38bdf8;
+      --green: #4ade80;
+      --red: #f43f5e;
+      --text: #f1f5f9;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    body {
+      margin: 0;
+      padding: 12px;
+      min-height: 100dvh;
+      background-color: var(--bg);
+      background-image: radial-gradient(#1e293b 1px, transparent 1px);
+      background-size: 16px 16px;
+      color: var(--text);
+      font-family: 'VT323', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+
+    .console-shell {
+      width: 100%;
+      max-width: 480px;
+      background: var(--panel);
+      border: 4px solid #64748b;
+      box-shadow:
+        0 0 0 4px #05060a,
+        0 14px 36px rgba(0, 0, 0, 0.8);
+      padding: 14px;
+      position: relative;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      gap: 6px;
+    }
+
+    .badge {
+      background: var(--panel-light);
+      border: 2px solid var(--border);
+      padding: 6px 8px;
+      color: var(--cyan);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 65%;
+    }
+
+    .sound-btn {
+      background: var(--panel-light);
+      border: 2px solid var(--border);
+      color: var(--gold);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      padding: 6px 8px;
+      cursor: pointer;
+    }
+
+    .screen-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 11;
+      background: #1e293b;
+      border: 4px solid #05060a;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+    }
+
+    canvas#gameCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    /* LANDING PAGE OVERLAY */
+    .landing-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      z-index: 15;
+      overflow-y: auto;
+    }
+
+    .landing-overlay.hidden {
+      display: none;
+    }
+
+    .pixel-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--gold);
+      text-shadow: 2px 2px 0 #881337;
+      text-align: center;
+      margin: 0;
+    }
+
+    .form-box {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.85);
+      border: 2px solid #475569;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .preview-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #1e293b;
+      border: 2px dashed var(--cyan);
+      padding: 6px 10px;
+    }
+
+    canvas#previewCanvas {
+      width: 42px;
+      height: 48px;
+      image-rendering: pixelated;
+      background: #0f172a;
+      border: 2px solid #334155;
+      flex-shrink: 0;
+    }
+
+    .preview-info {
+      font-size: 17px;
+      line-height: 1.15;
+      color: #cbd5e1;
+    }
+
+    .preview-role {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: var(--green);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .field-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: var(--cyan);
+      margin-bottom: 3px;
+      display: block;
+    }
+
+    .pixel-input {
+      width: 100%;
+      background: #0f172a;
+      border: 2px solid #64748b;
+      color: #ffffff;
+      font-family: 'VT323', monospace;
+      font-size: 20px;
+      padding: 5px 8px;
+      outline: none;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .pixel-input:focus {
+      border-color: var(--gold);
+    }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .role-btn {
+      background: #0f172a;
+      border: 2px solid #475569;
+      color: #94a3b8;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7.5px;
+      line-height: 1.4;
+      padding: 7px 4px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .role-btn.active {
+      background: #1e3a8a;
+      border-color: var(--gold);
+      color: #ffffff;
+      box-shadow: inset 0 0 0 1px var(--gold);
+    }
+
+    .start-btn {
+      width: 100%;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      background: var(--red);
+      color: #fff;
+      border: 3px solid #fff;
+      box-shadow: 0 4px 0 #881337;
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+
+    .start-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #881337;
+    }
+
+    /* RPG DIALOGUE REWARD BOX */
+    .dialogue-box {
+      position: absolute;
+      inset: 8px;
+      background: #0f172a;
+      border: 3px solid var(--gold);
+      box-shadow: 0 0 0 3px #05060a;
+      padding: 11px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 25;
+      overflow-y: auto;
+    }
+
+    .dialogue-box.hidden {
+      display: none;
+    }
+
+    .achievement-banner {
+      background: #1e293b;
+      border: 2px solid var(--gold);
+      padding: 5px 6px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7.5px;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .msg-header {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8.5px;
+      color: var(--cyan);
+      margin-bottom: 5px;
+      line-height: 1.4;
+    }
+
+    .msg-body {
+      font-size: 18px;
+      line-height: 1.22;
+      color: #f8fafc;
+      margin-bottom: 8px;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .stat-pill {
+      flex: 1;
+      background: #1e293b;
+      border: 1px solid #475569;
+      padding: 3px 5px;
+      text-align: center;
+      color: var(--green);
+    }
+
+    .action-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-wa {
+      flex: 2;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7.5px;
+      background: #22c55e;
+      color: #052e16;
+      border: 2px solid #fff;
+      padding: 9px 6px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .btn-replay {
+      flex: 1;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7.5px;
+      background: #334155;
+      color: #fff;
+      border: 2px solid #94a3b8;
+      padding: 9px 5px;
+      cursor: pointer;
+    }
+
+    .hint-bar {
+      margin-top: 10px;
+      background: #0f172a;
+      border: 2px solid var(--border);
+      padding: 6px 8px;
+      font-size: 17px;
+      text-align: center;
+      color: var(--gold);
+    }
+
+    /* PLATFORMER GAMEPAD CONTROLS */
+    .controls {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 8px;
+    }
+
+    .move-pad {
+      display: flex;
+      gap: 10px;
+    }
+
+    .pad-btn {
+      width: 56px;
+      height: 52px;
+      background: #273047;
+      border: 3px solid #64748b;
+      box-shadow: 0 4px 0 #0f172a;
+      color: #f8fafc;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .pad-btn:active, .pad-btn.active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #0f172a;
+      background: #475569;
+    }
+
+    .jump-btn {
+      height: 54px;
+      padding: 0 18px;
+      border-radius: 12px;
+      background: var(--red);
+      border: 3px solid #fda4af;
+      box-shadow: 0 5px 0 #881337;
+      color: #fff;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .jump-btn:active, .jump-btn.active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 #881337;
+    }
+
+    .footer-tag {
+      margin-top: 10px;
+      font-size: 15px;
+      color: #64748b;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="console-shell">
+    <div class="top-bar">
+      <div class="badge" id="hudTarget">HARI GURU 2026</div>
+      <button class="sound-btn" id="soundToggle">LAGU: ON</button>
+    </div>
+
+    <div class="screen-frame">
+      <canvas id="gameCanvas" width="320" height="220"></canvas>
+
+      <!-- LANDING PAGE FORM -->
+      <div class="landing-overlay" id="landingOverlay">
+        <h1 class="pixel-title">SELAMAT HARI GURU 2026</h1>
+
+        <div class="form-box">
+          <div class="preview-strip">
+            <canvas id="previewCanvas" width="28" height="32"></canvas>
+            <div class="preview-info">
+              <span class="preview-role" id="previewRoleLabel">KARAKTER: USTADZ</span>
+              <span id="previewDesc">Berkopyah & Baju Koko siap lompati rintangan!</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="field-label" for="inputNama">NAMA GURU:</label>
+            <input class="pixel-input" id="inputNama" type="text" placeholder="Contoh: Ahmad / Siti" maxlength="32" />
+          </div>
+
+          <div>
+            <span class="field-label">JENIS GURU:</span>
+            <div class="role-grid">
+              <button type="button" class="role-btn active" id="btnUstadz" data-role="ustadz">USTADZ<br>(Laki-Laki)</button>
+              <button type="button" class="role-btn" id="btnUstadzah" data-role="ustadzah">USTADZAH<br>(Perempuan)</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="start-btn" id="startBtn">▶ MULAI PETUALANGAN</button>
+      </div>
+
+      <!-- DIALOGUE REWARD BOX -->
+      <div class="dialogue-box hidden" id="dialogueBox">
+        <div>
+          <div class="achievement-banner">★ QUEST COMPLETE: PAHLAWAN TANPA TANDA JASA ★</div>
+          <div class="msg-header" id="msgTo">Kepada Yth. Ustadz/Ustadzah,</div>
+          <div class="msg-body" id="msgText"></div>
+        </div>
+        <div>
+          <div class="stats-row">
+            <div class="stat-pill">KESABARAN: 99.99%</div>
+            <div class="stat-pill">BERKAH ILMU: ∞</div>
+          </div>
+          <div class="action-row">
+            <a class="btn-wa" id="waReplyBtn" href="#" target="_blank">BALAS VIA WA</a>
+            <button class="btn-replay" id="replayBtn">ULANG</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hint-bar" id="hintBar">Isi nama & pilih Ustadz/Ustadzah dulu ya!</div>
+
+    <div class="controls">
+      <div class="move-pad">
+        <button class="pad-btn" id="btnLeft">◀</button>
+        <button class="pad-btn" id="btnRight">▶</button>
+      </div>
+      <button class="jump-btn" id="btnJump">LOMPAT ▲</button>
+    </div>
+
+    <div class="footer-tag" id="footerBrand">INLIFE • HARI GURU 25 NOV 2026</div>
+  </div>
+
+  <script>
+    // ==========================================
+    // KONFIGURASI PENGIRIM (GANTI SESUAI DATAMU)
+    // ==========================================
+    const CONFIG = {
+      pengirim: "Raya (Murid SMA AL FALAH)",
+      nomorWA: "628118202722" // Ganti pakai nomor WA kamu (awalan 62)
+    };
+
+    // Baca URL parameter kalau ada (opsional buat pre-fill)
+    const params = new URLSearchParams(window.location.search);
+    const paramNama = params.get("nama")?.trim() || "";
+    const paramJenis = (params.get("jenis") || "").toLowerCase();
+
+    let selectedRole = paramJenis === "ustadzah" ? "ustadzah" : "ustadz";
+    let displayTeacherName = "Ustadz";
+
+    const inputNamaEl = document.getElementById("inputNama");
+    if (paramNama) inputNamaEl.value = paramNama;
+
+    // ==========================================
+    // 8-BIT CHIPTUNE ENGINE: LAGU "HYMNE GURU"
+    // ==========================================
+    let audioCtx = null;
+    let musicOn = true;
+    let musicTimer = null;
+    let noteIndex = 0;
+
+    // Frekuensi nada (Hz)
+    const N = {
+      F4: 349.23, Fs4: 369.99, G4: 392.00, A4: 440.00, B4: 493.88,
+      C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00,
+      REST: 0
+    };
+
+    // Melodi "Hymne Guru" (Terpujilah wahai engkau ibu bapak guru...)
+    // Format: [frekuensi, durasi_ketuk]
+    const HYMNE_GURU_MELODY = [
+      // Ter-pu-ji-lah wa-hai eng-kau
+      [N.G4, 1], [N.E5, 1.5], [N.D5, 0.5], [N.C5, 1], [N.B4, 1],
+      [N.A4, 3], [N.G4, 1],
+      // i-bu ba-pak gu-ru
+      [N.F5, 1.5], [N.E5, 0.5], [N.D5, 1], [N.C5, 1],
+      [N.D5, 3], [N.REST, 1],
+
+      // Na-ma-mu a-kan se-la-lu
+      [N.G4, 1], [N.D5, 1.5], [N.C5, 0.5], [N.B4, 1], [N.A4, 1],
+      [N.G4, 3], [N.G4, 1],
+      // hi-dup da-lam sa-nu-ba-ri-ku
+      [N.C5, 1.5], [N.B4, 0.5], [N.A4, 1], [N.G4, 0.5], [N.Fs4, 0.5],
+      [N.G4, 3], [N.REST, 1],
+
+      // Eng-kau se-ba-gai pe-li-ta da-lam ke-ge-la-pan
+      [N.G4, 0.5], [N.G4, 0.5], [N.E5, 1.5], [N.E5, 0.5], [N.E5, 1], [N.F5, 0.5], [N.E5, 0.5],
+      [N.D5, 3], [N.D5, 1],
+      [N.D5, 1.5], [N.D5, 0.5], [N.D5, 1], [N.E5, 0.5], [N.D5, 0.5],
+      [N.C5, 3], [N.REST, 1],
+
+      // Eng-kau lak-sa-na em-bun pe-nye-juk da-lam ke-ha-u-san
+      [N.C5, 0.5], [N.C5, 0.5], [N.A5, 1.5], [N.A5, 0.5], [N.A5, 1], [N.G5, 0.5], [N.F5, 0.5],
+      [N.E5, 3], [N.C5, 1],
+      [N.D5, 1.5], [N.E5, 0.5], [N.D5, 1], [N.B4, 1],
+      [N.C5, 3.5], [N.REST, 1.5]
+    ];
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+    }
+
+    function playChiptuneNote(freq, durationSec, volume = 0.055, type = "triangle") {
+      if (!musicOn || !freq) return;
+      initAudio();
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now);
+
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(volume, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + durationSec * 0.92);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + durationSec);
+    }
+
+    function startHymneGuruLoop() {
+      stopHymneGuruLoop();
+      if (!musicOn) return;
+      initAudio();
+
+      const beatMs = 460; // Tempo khidmat & lembut (~130 BPM eighth / ~65 BPM half)
+      function scheduleNext() {
+        if (!musicOn) return;
+        const [freq, beats] = HYMNE_GURU_MELODY[noteIndex];
+        const durMs = beats * beatMs;
+        if (freq > 0) {
+          playChiptuneNote(freq, durMs / 1000, 0.065, "triangle");
+          // Harmoni oktaf bawah lembut
+          playChiptuneNote(freq / 2, durMs / 1000, 0.025, "sine");
+        }
+        noteIndex = (noteIndex + 1) % HYMNE_GURU_MELODY.length;
+        musicTimer = setTimeout(scheduleNext, durMs);
+      }
+      scheduleNext();
+    }
+
+    function stopHymneGuruLoop() {
+      if (musicTimer) {
+        clearTimeout(musicTimer);
+        musicTimer = null;
+      }
+    }
+
+    function sfxJump() {
+      if (!musicOn) return;
+      initAudio();
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "square";
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.exponentialRampToValueAtTime(520, now + 0.14);
+      gain.gain.setValueAtTime(0.04, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.15);
+    }
+
+    function sfxCoin() {
+      playChiptuneNote(987.77, 0.09, 0.05, "square");
+      setTimeout(() => playChiptuneNote(1318.51, 0.16, 0.05, "square"), 75);
+    }
+
+    function sfxFall() {
+      playChiptuneNote(240, 0.12, 0.05, "sawtooth");
+      setTimeout(() => playChiptuneNote(160, 0.18, 0.05, "sawtooth"), 100);
+    }
+
+    function sfxWin() {
+      const notes = [523.25, 659.25, 783.99, 1046.50];
+      notes.forEach((n, i) => {
+        setTimeout(() => playChiptuneNote(n, 0.16, 0.06, "square"), i * 100);
+      });
+    }
+
+    document.getElementById("soundToggle").addEventListener("click", (e) => {
+      musicOn = !musicOn;
+      e.target.textContent = musicOn ? "LAGU: ON" : "LAGU: OFF";
+      if (musicOn) {
+        startHymneGuruLoop();
+      } else {
+        stopHymneGuruLoop();
+      }
+    });
+
+    // ==========================================
+    // PIXEL ART SPRITES (USTADZ KOPYAH & USTADZAH HIJAB)
+    // ==========================================
+    const PALETTE = {
+      K: "#09090b", // Hitam pekat (Kopyah & Sepatu)
+      C: "#3f3f46", // Aksen kopyah abu gelap
+      S: "#fed7aa", // Kulit wajah & tangan
+      E: "#0f172a", // Mata
+      R: "#fb7185", // Pipi merona / pita kado
+      W: "#f8fafc", // Baju koko putih
+      G: "#cbd5e1", // Lipatan baju koko
+      P: "#1e293b", // Celana / sarung gelap
+      J: "#14b8a6", // Hijab tosca cerah
+      H: "#0f766e", // Bayangan lipatan hijab
+      D: "#0d9488", // Gamis Ustadzah
+      Y: "#fbbf24", // Emas peti
+      B: "#92400e"  // Kayu peti
+    };
+
+    // Karakter 1: USTADZ (Wajib Berkopyah Hitam + Baju Koko)
+    const SPRITE_USTADZ = [
+      "....KKKKKK....",
+      "...KKKKKKKK...",
+      "...KCCCCCCK...",
+      "...SSSSSSSS...",
+      "...SEESSEES...",
+      "...SSSSSSSS...",
+      "....SSSSSS....",
+      "...WWWWWWWW...",
+      "..SWWWGGWWWS..",
+      "..SWWWGGWWWS..",
+      "...WWWWWWWW...",
+      "...PPPPPPPP...",
+      "...PPPPPPPP...",
+      "...PPP..PPP...",
+      "..KKK....KKK.."
+    ];
+
+    // Karakter 2: USTADZAH (Wajib Berhijab Menutup Kepala & Dada + Gamis)
+    const SPRITE_USTADZAH = [
+      "....JJJJJJ....",
+      "...JJJJJJJJ...",
+      "..JJSSSSSSJJ..",
+      "..JSEESSEESJ..",
+      "..JSRSSSSRSJ..",
+      "..JJSSSSSSJJ..",
+      ".JJHJJJJJJHJJ.",
+      ".SJJHJJJJHJJS.",
+      ".SDDDDDDDDDDS.",
+      "..DDDDDDDDDD..",
+      "..DDDDDDDDDD..",
+      "..DDDDDDDDDD..",
+      "..DDDDDDDDDD..",
+      "...DDD..DDD...",
+      "..KKK....KKK.."
+    ];
+
+    const CHEST_CLOSED = [
+      "..YYYYYYYY..",
+      ".YBBBBBBBBY.",
+      "YBBBBBBBBBRB",
+      "YBBBBYYBBBRB",
+      "YYYYYYYYYYYY",
+      "YBBBBYYBBBRB",
+      "YBBBBBBBBBRB",
+      "YBBBBBBBBBRB",
+      ".YYYYYYYYYY."
+    ];
+
+    const CHEST_OPEN = [
+      "..YYYYYYYY..",
+      ".YKKKKKKKKY.",
+      "YKKKKKKKKKKY",
+      "YBBBBYYBBBBY",
+      "YYYYYYYYYYYY",
+      "YBBBBYYBBBBY",
+      "YBBBBBBBBBRB",
+      ".YYYYYYYYYY."
+    ];
+
+    function drawSprite(ctx, map, x, y, scale = 2, flipX = false) {
+      const cols = map[0].length;
+      for (let r = 0; r < map.length; r++) {
+        for (let c = 0; c < cols; c++) {
+          const drawCol = flipX ? (cols - 1 - c) : c;
+          const ch = map[r][drawCol];
+          if (ch !== "." && PALETTE[ch]) {
+            ctx.fillStyle = PALETTE[ch];
+            ctx.fillRect(Math.round(x + c * scale), Math.round(y + r * scale), scale, scale);
+          }
+        }
+      }
+    }
+
+    // ==========================================
+    // LANDING PAGE INTERACTION & LIVE PREVIEW
+    // ==========================================
+    const previewCanvas = document.getElementById("previewCanvas");
+    const previewCtx = previewCanvas.getContext("2d");
+
+    function updateLandingPreview() {
+      previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+      const sprite = selectedRole === "ustadzah" ? SPRITE_USTADZAH : SPRITE_USTADZ;
+      drawSprite(previewCtx, sprite, 0, 1, 2);
+
+      document.getElementById("btnUstadz").classList.toggle("active", selectedRole === "ustadz");
+      document.getElementById("btnUstadzah").classList.toggle("active", selectedRole === "ustadzah");
+
+      if (selectedRole === "ustadzah") {
+        document.getElementById("previewRoleLabel").textContent = "KARAKTER: USTADZAH";
+        document.getElementById("previewDesc").textContent = "Muslimah berhijab siap melompati rintangan!";
+      } else {
+        document.getElementById("previewRoleLabel").textContent = "KARAKTER: USTADZ";
+        document.getElementById("previewDesc").textContent = "Berkopyah & baju koko siap melompati rintangan!";
+      }
+    }
+
+    document.getElementById("btnUstadz").addEventListener("click", () => {
+      selectedRole = "ustadz";
+      updateLandingPreview();
+    });
+
+    document.getElementById("btnUstadzah").addEventListener("click", () => {
+      selectedRole = "ustadzah";
+      updateLandingPreview();
+    });
+
+    updateLandingPreview();
+
+    // Format sapaan otomatis biar tidak dobel (misal "Ustadzah Ustadzah Siti")
+    function formatSapaanGuru(rawName, role) {
+      const prefix = role === "ustadzah" ? "Ustadzah" : "Ustadz";
+      const clean = rawName.trim();
+      if (!clean) return prefix;
+      if (/^(ustadzah|ustadz|ustad)\b/i.test(clean)) {
+        return clean;
+      }
+      return `${prefix} ${clean}`;
+    }
+
+    // ==========================================
+    // PLATFORMER GAME ENGINE (LOMPATI LUBANG)
+    // ==========================================
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const GROUND_Y = 164;
+    const LEVEL_WIDTH = 1080;
+
+    // Daratan dengan 3 lubang yang harus dilompati
+    const PLATFORMS = [
+      { start: 0, end: 245 },     // Area Start
+      { start: 300, end: 495 },   // Pulau 2 (setelah Lubang 1)
+      { start: 555, end: 755 },   // Pulau 3 (setelah Lubang 2)
+      { start: 815, end: 1080 }   // Pulau Finish / Peti Kado (setelah Lubang 3)
+    ];
+
+    let gameStarted = false;
+    let chestOpened = false;
+    let cameraX = 0;
+    let tick = 0;
+    let particles = [];
+    let floatingTexts = [];
+
+    const player = {
+      x: 36,
+      y: GROUND_Y - 30,
+      vx: 0,
+      vy: 0,
+      speed: 2.3,
+      jumpPower: -6.3,
+      grounded: true,
+      facingLeft: false,
+      lastSafeX: 36
+    };
+
+    const chest = { x: 960, y: GROUND_Y - 18 };
+
+    let orbs = [
+      { x: 155, y: 120, label: "+ILMU", collected: false },
+      { x: 395, y: 112, label: "+SABAR", collected: false },
+      { x: 650, y: 112, label: "+BERKAH", collected: false }
+    ];
+
+    const keys = { left: false, right: false };
+
+    function resetGame() {
+      player.x = 36;
+      player.y = GROUND_Y - 30;
+      player.vx = 0;
+      player.vy = 0;
+      player.grounded = true;
+      player.facingLeft = false;
+      player.lastSafeX = 36;
+      cameraX = 0;
+      chestOpened = false;
+      particles = [];
+      floatingTexts = [];
+      orbs = [
+        { x: 155, y: 120, label: "+ILMU", collected: false },
+        { x: 395, y: 112, label: "+SABAR", collected: false },
+        { x: 650, y: 112, label: "+BERKAH", collected: false }
+      ];
+      document.getElementById("dialogueBox").classList.add("hidden");
+      document.getElementById("hintBar").textContent = "Lompati 3 lubang sampai ke peti kado di ujung kanan!";
+    }
+
+    function triggerJump() {
+      if (!gameStarted || chestOpened) return;
+      if (player.grounded) {
+        player.vy = player.jumpPower;
+        player.grounded = false;
+        sfxJump();
+      }
+    }
+
+    function openChest() {
+      if (chestOpened) return;
+      chestOpened = true;
+      sfxWin();
+      document.getElementById("hintBar").textContent = "Selamat! Peti ucapan berhasil dibuka!";
+
+      const colors = ["#fbbf24", "#f43f5e", "#4ade80", "#38bdf8", "#c084fc"];
+      for (let i = 0; i < 55; i++) {
+        particles.push({
+          x: chest.x + 12,
+          y: chest.y + 6,
+          vx: (Math.random() - 0.5) * 4.5,
+          vy: -Math.random() * 4 - 1.2,
+          color: colors[i % colors.length],
+          life: 70
+        });
+      }
+
+      const pesan = `Selamat Hari Guru Nasional! Terima kasih banyak atas ilmu, kesabaran, dan ketulusan ${displayTeacherName} dalam membimbing kami. Semoga setiap ilmu yang diajarkan menjadi amal jariyah dan keberkahan yang tak terputus. Sehat selalu! — ${CONFIG.pengirim}`;
+
+      const waText = encodeURIComponent(`Assalamu'alaikum ${CONFIG.pengirim.split(" ")[0]}, terima kasih banyak game pixel Hari Guru-nya buat ${displayTeacherName}! Kreatif sekali, sukses terus ya!`);
+      document.getElementById("waReplyBtn").href = `https://wa.me/${CONFIG.nomorWA}?text=${waText}`;
+      document.getElementById("msgTo").textContent = `Kepada Yth. ${displayTeacherName},`;
+
+      setTimeout(() => {
+        document.getElementById("dialogueBox").classList.remove("hidden");
+        typewriterEffect(pesan, document.getElementById("msgText"));
+      }, 650);
+    }
+
+    function typewriterEffect(text, el) {
+      el.textContent = "";
+      let i = 0;
+      const timer = setInterval(() => {
+        el.textContent += text[i];
+        i++;
+        if (i >= text.length) clearInterval(timer);
+      }, 20);
+    }
+
+    function update() {
+      tick++;
+      if (!gameStarted || chestOpened) return;
+
+      // Gerak horizontal
+      if (keys.left) {
+        player.vx = -player.speed;
+        player.facingLeft = true;
+      } else if (keys.right) {
+        player.vx = player.speed;
+        player.facingLeft = false;
+      } else {
+        player.vx = 0;
+      }
+
+      player.x += player.vx;
+      player.x = Math.max(8, Math.min(LEVEL_WIDTH - 34, player.x));
+
+      // Gravitasi & lompat
+      player.vy += 0.34;
+      player.y += player.vy;
+
+      // Cek pijakan tanah (atau jatuh ke lubang!)
+      const footX = player.x + 14; // titik tengah karakter
+      const feetY = player.y + 30;
+      let onGround = false;
+
+      if (player.vy >= 0 && feetY >= GROUND_Y && feetY <= GROUND_Y + 12) {
+        for (const plat of PLATFORMS) {
+          if (footX >= plat.start + 4 && footX <= plat.end - 4) {
+            onGround = true;
+            player.y = GROUND_Y - 30;
+            player.vy = 0;
+            // Simpan titik aman sebelum tepi lubang
+            if (footX >= plat.start + 22 && footX <= plat.end - 22) {
+              player.lastSafeX = player.x;
+            }
+            break;
+          }
+        }
+      }
+      player.grounded = onGround;
+
+      // Kalau jatuh ke lubang -> respawn aman di pulau terakhir
+      if (player.y > 225) {
+        sfxFall();
+        player.x = player.lastSafeX;
+        player.y = GROUND_Y - 48;
+        player.vy = 0;
+        floatingTexts.push({ x: player.x + 10, y: player.y, text: "HATI-HATI LUBANG!", life: 45 });
+      }
+
+      // Kamera mengikuti karakter
+      const targetCam = player.x - 105;
+      cameraX += (Math.max(0, Math.min(LEVEL_WIDTH - 320, targetCam)) - cameraX) * 0.14;
+
+      // Ambil Orb Ilmu
+      orbs.forEach((orb) => {
+        if (!orb.collected && Math.hypot((player.x + 14) - orb.x, (player.y + 15) - orb.y) < 22) {
+          orb.collected = true;
+          sfxCoin();
+          floatingTexts.push({ x: orb.x, y: orb.y, text: orb.label, life: 45 });
+        }
+      });
+
+      // Sampai Peti Kado
+      if (Math.hypot((player.x + 14) - (chest.x + 12), (player.y + 15) - (chest.y + 8)) < 26) {
+        openChest();
+      }
+    }
+
+    function drawWorld() {
+      // Langit senja hangat (biar kopyah hitam & hijab cerah sama-sama kontras jelas)
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, 220);
+      skyGrad.addColorStop(0, "#1e293b");
+      skyGrad.addColorStop(0.65, "#334155");
+      skyGrad.addColorStop(1, "#0f172a");
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, 320, 220);
+
+      // Bulan sabit & bintang pixel
+      ctx.fillStyle = "#fef08a";
+      ctx.fillRect(265, 22, 12, 12);
+      ctx.fillStyle = "#1e293b";
+      ctx.fillRect(269, 20, 10, 10);
+
+      ctx.fillStyle = "#e2e8f0";
+      ctx.fillRect(42, 26, 2, 2);
+      ctx.fillRect(118, 18, 2, 2);
+      ctx.fillRect(195, 32, 2, 2);
+
+      // Awan pixel parallax pelan
+      ctx.fillStyle = "rgba(248, 250, 252, 0.14)";
+      const cloudOffset = -(cameraX * 0.25) % 360;
+      [40, 180, 320].forEach((cx) => {
+        const drawX = cx + cloudOffset;
+        ctx.fillRect(drawX, 38, 36, 8);
+        ctx.fillRect(drawX + 6, 32, 22, 6);
+      });
+
+      ctx.save();
+      ctx.translate(-Math.round(cameraX), 0);
+
+      // Papan Penunjuk di Awal Level
+      ctx.fillStyle = "#78350f";
+      ctx.fillRect(92, GROUND_Y - 26, 4, 26);
+      ctx.fillStyle = "#92400e";
+      ctx.fillRect(66, GROUND_Y - 44, 56, 20);
+      ctx.strokeStyle = "#fbbf24";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(66, GROUND_Y - 44, 56, 20);
+      ctx.fillStyle = "#fef3c7";
+      ctx.font = "5px 'Press Start 2P', monospace";
+      ctx.textAlign = "center";
+      ctx.fillText("HARI GURU", 94, GROUND_Y - 34);
+      ctx.fillText("25 NOV ->", 94, GROUND_Y - 27);
+
+      // Gambar Pulau Daratan & Jurang Lubang
+      PLATFORMS.forEach((plat) => {
+        const w = plat.end - plat.start;
+        // Tanah cokelat
+        ctx.fillStyle = "#78350f";
+        ctx.fillRect(plat.start, GROUND_Y, w, 220 - GROUND_Y);
+
+        // Tekstur bata tanah
+        ctx.fillStyle = "#451a03";
+        for (let gx = plat.start + 6; gx < plat.end - 8; gx += 16) {
+          ctx.fillRect(gx, GROUND_Y + 12, 8, 4);
+          ctx.fillRect(gx + 4, GROUND_Y + 26, 8, 4);
+        }
+
+        // Rumput hijau atas
+        ctx.fillStyle = "#22c55e";
+        ctx.fillRect(plat.start, GROUND_Y, w, 6);
+        ctx.fillStyle = "#15803d";
+        ctx.fillRect(plat.start, GROUND_Y + 6, w, 3);
+      });
+
+      // Tanda bahaya kecil di bibir lubang
+      [245, 495, 755].forEach((holeEdge) => {
+        ctx.fillStyle = "#f43f5e";
+        ctx.fillRect(holeEdge - 6, GROUND_Y - 8, 2, 8);
+        ctx.fillRect(holeEdge - 6, GROUND_Y - 11, 5, 4);
+      });
+
+      // Orb Ilmu Melayang
+      orbs.forEach((orb) => {
+        if (orb.collected) return;
+        const bob = Math.sin(tick * 0.1) * 3;
+        ctx.fillStyle = "#fbbf24";
+        ctx.fillRect(orb.x - 4, orb.y - 4 + bob, 9, 9);
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(orb.x - 2, orb.y - 2 + bob, 3, 3);
+      });
+
+      // Peti Kado Finish
+      drawSprite(ctx, chestOpened ? CHEST_OPEN : CHEST_CLOSED, chest.x, chest.y, 2);
+      if (!chestOpened && Math.floor(tick / 18) % 2 === 0) {
+        ctx.fillStyle = "#fbbf24";
+        ctx.font = "7px 'Press Start 2P', monospace";
+        ctx.textAlign = "center";
+        ctx.fillText("▼", chest.x + 12, chest.y - 6);
+      }
+
+      // Karakter Ustadz (Berkopyah) atau Ustadzah (Berhijab)
+      const activeSprite = selectedRole === "ustadzah" ? SPRITE_USTADZAH : SPRITE_USTADZ;
+      const walkBob = (player.grounded && player.vx !== 0) ? Math.abs(Math.sin(tick * 0.3)) * -2 : 0;
+      drawSprite(ctx, activeSprite, player.x, player.y + walkBob, 2, player.facingLeft);
+
+      // Nama kecil di atas kepala karakter
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "5px 'Press Start 2P', monospace";
+      ctx.textAlign = "center";
+      ctx.fillText(displayTeacherName, player.x + 14, player.y - 6);
+
+      // Floating Text (+ILMU / HATI-HATI)
+      floatingTexts.forEach((ft) => {
+        ctx.fillStyle = "#4ade80";
+        ctx.font = "6px 'Press Start 2P', monospace";
+        ctx.textAlign = "center";
+        ctx.fillText(ft.text, ft.x, ft.y);
+        ft.y -= 0.45;
+        ft.life--;
+      });
+      floatingTexts = floatingTexts.filter((ft) => ft.life > 0);
+
+      // Partikel Confetti
+      particles.forEach((p) => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 3, 3);
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.14;
+        p.life--;
+      });
+      particles = particles.filter((p) => p.life > 0);
+
+      ctx.restore();
+    }
+
+    function loop() {
+      update();
+      drawWorld();
+      requestAnimationFrame(loop);
+    }
+
+    // ==========================================
+    // START & CONTROLS BINDING
+    // ==========================================
+    document.getElementById("startBtn").addEventListener("click", () => {
+      displayTeacherName = formatSapaanGuru(inputNamaEl.value, selectedRole);
+      document.getElementById("hudTarget").textContent = displayTeacherName.toUpperCase();
+      document.getElementById("landingOverlay").classList.add("hidden");
+
+      gameStarted = true;
+      resetGame();
+      sfxCoin();
+      if (musicOn) {
+        noteIndex = 0;
+        startHymneGuruLoop();
+      }
+    });
+
+    document.getElementById("replayBtn").addEventListener("click", () => {
+      resetGame();
+    });
+
+    function bindHoldButton(btnId, keyName) {
+      const btn = document.getElementById(btnId);
+      const down = (e) => {
+        e.preventDefault();
+        keys[keyName] = true;
+        btn.classList.add("active");
+      };
+      const up = (e) => {
+        e.preventDefault();
+        keys[keyName] = false;
+        btn.classList.remove("active");
+      };
+      btn.addEventListener("pointerdown", down);
+      btn.addEventListener("pointerup", up);
+      btn.addEventListener("pointerleave", up);
+      btn.addEventListener("pointercancel", up);
+    }
+
+    bindHoldButton("btnLeft", "left");
+    bindHoldButton("btnRight", "right");
+
+    const jumpBtn = document.getElementById("btnJump");
+    jumpBtn.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      jumpBtn.classList.add("active");
+      triggerJump();
+    });
+    jumpBtn.addEventListener("pointerup", () => jumpBtn.classList.remove("active"));
+    jumpBtn.addEventListener("pointerleave", () => jumpBtn.classList.remove("active"));
+
+    // Keyboard support buat preview di laptop
+    window.addEventListener("keydown", (e) => {
+      if (!gameStarted) return;
+      if (e.key === "ArrowLeft" || e.key === "a") keys.left = true;
+      if (e.key === "ArrowRight" || e.key === "d") keys.right = true;
+      if (e.key === "ArrowUp" || e.key === "w" || e.key === " ") {
+        e.preventDefault();
+        triggerJump();
+      }
+    });
+
+    window.addEventListener("keyup", (e) => {
+      if (e.key === "ArrowLeft" || e.key === "a") keys.left = false;
+      if (e.key === "ArrowRight" || e.key === "d") keys.right = false;
+    });
+
+    loop();
+  </script>
+</body>
+</html>
